@@ -192,6 +192,148 @@ class InventoryController {
     }
   }
 
+  // ========== GESTIÓN DE VARIANTES ==========
+
+  // Obtener todas las variantes de un insumo
+  async getSupplyVariants(req, res) {
+    try {
+      const { id } = req.params;
+      const variants = await inventoryService.getSupplyVariants(parseInt(id));
+      
+      res.json({
+        success: true,
+        message: 'Variantes obtenidas exitosamente',
+        data: variants,
+        count: variants.length
+      });
+    } catch (error) {
+      const statusCode = error.message === 'Insumo no encontrado' ? 404 : 500;
+      res.status(statusCode).json({
+        success: false,
+        message: error.message,
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
+  }
+
+  // Agregar stock a una variante específica
+  async addStockToVariant(req, res) {
+    try {
+      const { id } = req.params; // id del insumo
+      const { id_supply_color, quantity, notes } = req.body;
+
+      if (!id_supply_color) {
+        return res.status(400).json({
+          success: false,
+          message: 'El id_supply_color es requerido'
+        });
+      }
+
+      if (!quantity || quantity <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'La cantidad debe ser mayor a 0'
+        });
+      }
+
+      const result = await inventoryService.addStockToVariant(
+        parseInt(id), 
+        parseInt(id_supply_color), 
+        parseFloat(quantity), 
+        notes
+      );
+      
+      res.json({
+        success: true,
+        message: 'Stock agregado a la variante exitosamente',
+        data: result
+      });
+    } catch (error) {
+      const statusCode = error.message.includes('no encontrado') ? 404 : 400;
+      res.status(statusCode).json({
+        success: false,
+        message: error.message,
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
+  }
+
+  // Restar stock de una variante específica
+  async subtractStockFromVariant(req, res) {
+    try {
+      const { id } = req.params; // id del insumo
+      const { id_supply_color, quantity, notes } = req.body;
+
+      if (!id_supply_color) {
+        return res.status(400).json({
+          success: false,
+          message: 'El id_supply_color es requerido'
+        });
+      }
+
+      if (!quantity || quantity <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'La cantidad debe ser mayor a 0'
+        });
+      }
+
+      const result = await inventoryService.subtractStockFromVariant(
+        parseInt(id), 
+        parseInt(id_supply_color), 
+        parseFloat(quantity), 
+        notes
+      );
+      
+      res.json({
+        success: true,
+        message: 'Stock reducido de la variante exitosamente',
+        data: result
+      });
+    } catch (error) {
+      const statusCode = error.message.includes('no encontrado') ? 404 : 
+                         error.message.includes('insuficiente') ? 409 : 400;
+      res.status(statusCode).json({
+        success: false,
+        message: error.message,
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
+  }
+
+  // Obtener o crear una variante específica
+  async getOrCreateVariant(req, res) {
+    try {
+      const { id } = req.params; // id del insumo
+      const { id_supply_color } = req.body;
+
+      if (!id_supply_color) {
+        return res.status(400).json({
+          success: false,
+          message: 'El id_supply_color es requerido'
+        });
+      }
+
+      const variant = await inventoryService.getOrCreateVariant(
+        parseInt(id), 
+        parseInt(id_supply_color)
+      );
+      
+      res.json({
+        success: true,
+        message: 'Variante obtenida/creada exitosamente',
+        data: variant
+      });
+    } catch (error) {
+      const statusCode = error.message.includes('no encontrado') ? 404 : 400;
+      res.status(statusCode).json({
+        success: false,
+        message: error.message,
+        error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
+  }
+
   // ========== REPORTES Y CONSULTAS ==========
 
   // Obtener historial de movimientos

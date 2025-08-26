@@ -2,7 +2,7 @@
  * Validador para creación de insumos
  */
 const validateCreateSupply = (req, res, next) => {
-  const { description, id_supply_color, id_supply_type, measuring_uom_id } = req.body;
+  const { description, id_supply_type, measuring_uom_id } = req.body;
   const errors = [];
 
   // Validar descripción
@@ -13,10 +13,6 @@ const validateCreateSupply = (req, res, next) => {
   }
 
   // Validar IDs opcionales
-  if (id_supply_color && (!Number.isInteger(id_supply_color) || id_supply_color <= 0)) {
-    errors.push('El ID del color debe ser un número entero positivo');
-  }
-
   if (id_supply_type && (!Number.isInteger(id_supply_type) || id_supply_type <= 0)) {
     errors.push('El ID del tipo debe ser un número entero positivo');
   }
@@ -40,11 +36,11 @@ const validateCreateSupply = (req, res, next) => {
  * Validador para actualización de insumos
  */
 const validateUpdateSupply = (req, res, next) => {
-  const { description, id_supply_color, id_supply_type, measuring_uom_id, active } = req.body;
+  const { description, id_supply_type, measuring_uom_id, active } = req.body;
   const errors = [];
 
   // Validar que al menos un campo esté presente
-  if (!description && id_supply_color === undefined && id_supply_type === undefined && 
+  if (!description && id_supply_type === undefined && 
       measuring_uom_id === undefined && active === undefined) {
     errors.push('Debe proporcionar al menos un campo para actualizar');
   }
@@ -59,10 +55,6 @@ const validateUpdateSupply = (req, res, next) => {
   }
 
   // Validar IDs opcionales si están presentes
-  if (id_supply_color !== undefined && (!Number.isInteger(id_supply_color) || id_supply_color <= 0)) {
-    errors.push('El ID del color debe ser un número entero positivo');
-  }
-
   if (id_supply_type !== undefined && (!Number.isInteger(id_supply_type) || id_supply_type <= 0)) {
     errors.push('El ID del tipo debe ser un número entero positivo');
   }
@@ -216,10 +208,87 @@ const validateSearchFilters = (req, res, next) => {
   next();
 };
 
+/**
+ * Validador para movimientos de stock de variantes
+ */
+const validateVariantStockMovement = (req, res, next) => {
+  const { id_supply_color, quantity, notes } = req.body;
+  const errors = [];
+
+  // Validar id_supply_color
+  if (!id_supply_color) {
+    errors.push('El id_supply_color es requerido');
+  } else if (!Number.isInteger(id_supply_color) || id_supply_color <= 0) {
+    errors.push('El id_supply_color debe ser un número entero positivo');
+  }
+
+  // Validar cantidad
+  if (!quantity) {
+    errors.push('La cantidad es requerida');
+  } else if (isNaN(quantity)) {
+    errors.push('La cantidad debe ser un número válido');
+  } else if (parseFloat(quantity) <= 0) {
+    errors.push('La cantidad debe ser mayor a 0');
+  } else if (parseFloat(quantity) > 999999.9999) {
+    errors.push('La cantidad no puede exceder 999999.9999');
+  }
+
+  // Validar notas (opcional)
+  if (notes && typeof notes !== 'string') {
+    errors.push('Las notas deben ser texto');
+  } else if (notes && notes.length > 1000) {
+    errors.push('Las notas no pueden exceder 1000 caracteres');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Datos de entrada inválidos',
+      errors
+    });
+  }
+
+  // Convertir a números
+  req.body.id_supply_color = parseInt(id_supply_color);
+  req.body.quantity = parseFloat(quantity);
+  
+  next();
+};
+
+/**
+ * Validador para obtener o crear variante
+ */
+const validateVariantData = (req, res, next) => {
+  const { id_supply_color } = req.body;
+  const errors = [];
+
+  // Validar id_supply_color
+  if (!id_supply_color) {
+    errors.push('El id_supply_color es requerido');
+  } else if (!Number.isInteger(id_supply_color) || id_supply_color <= 0) {
+    errors.push('El id_supply_color debe ser un número entero positivo');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Datos de entrada inválidos',
+      errors
+    });
+  }
+
+  // Convertir a número
+  req.body.id_supply_color = parseInt(id_supply_color);
+  
+  next();
+};
+
 module.exports = {
   validateCreateSupply,
   validateUpdateSupply,
   validateStockMovement,
+  validateVariantStockMovement,
+  validateVariantData,
   validateIdParam,
   validatePaginationQuery,
   validateSearchFilters

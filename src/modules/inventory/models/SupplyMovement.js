@@ -1,7 +1,7 @@
 class SupplyMovement {
   constructor(data = {}) {
     this.id_supply_movement = data.id_supply_movement;
-    this.id_supply = data.id_supply;
+    this.id_supply_variant = data.id_supply_variant;
     this.movement_date = data.movement_date || new Date();
     this.quantity = data.quantity;
     this.movement_type = data.movement_type;
@@ -24,8 +24,8 @@ class SupplyMovement {
   validate() {
     const errors = [];
 
-    if (!this.id_supply) {
-      errors.push('ID del insumo es requerido');
+    if (!this.id_supply_variant) {
+      errors.push('ID de la variante del insumo es requerido');
     }
 
     if (!this.quantity || isNaN(this.quantity)) {
@@ -86,7 +86,7 @@ class SupplyMovement {
   // Convertir a objeto para inserción en BD
   toDatabase() {
     return {
-      id_supply: this.id_supply,
+      id_supply_variant: this.id_supply_variant,
       movement_date: this.movement_date,
       quantity: this.quantity,
       movement_type: this.movement_type,
@@ -100,7 +100,7 @@ class SupplyMovement {
   static fromDatabase(row) {
     return new SupplyMovement({
       id_supply_movement: row.id_supply_movement,
-      id_supply: row.id_supply,
+      id_supply_variant: row.id_supply_variant,
       movement_date: row.movement_date,
       quantity: parseFloat(row.quantity),
       movement_type: row.movement_type,

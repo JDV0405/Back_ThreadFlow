@@ -6,6 +6,8 @@ const {
   validateCreateSupply,
   validateUpdateSupply,
   validateStockMovement,
+  validateVariantStockMovement,
+  validateVariantData,
   validateIdParam,
   validatePaginationQuery,
   validateSearchFilters
@@ -95,6 +97,43 @@ router.post('/supplies/:id/stock/subtract', validateIdParam, validateStockMoveme
  */
 router.get('/supplies/:id/movements', validateIdParam, validatePaginationQuery, inventoryController.getMovementHistory
 );
+
+// ========== RUTAS DE VARIANTES ==========
+
+/**
+ * @route   GET /api/inventory/supplies/:id/variants
+ * @desc    Obtener todas las variantes (colores) de un insumo con su stock
+ * @access  Public
+ * @param   id - ID del insumo
+ */
+router.get('/supplies/:id/variants', validateIdParam, inventoryController.getSupplyVariants);
+
+/**
+ * @route   POST /api/inventory/supplies/:id/variants/get-or-create
+ * @desc    Obtener o crear una variante específica de un insumo
+ * @access  Public
+ * @param   id - ID del insumo
+ * @body    id_supply_color
+ */
+router.post('/supplies/:id/variants/get-or-create', validateIdParam, validateVariantData, inventoryController.getOrCreateVariant);
+
+/**
+ * @route   POST /api/inventory/supplies/:id/variants/add-stock
+ * @desc    Agregar stock a una variante específica del insumo
+ * @access  Public
+ * @param   id - ID del insumo
+ * @body    id_supply_color, quantity, notes
+ */
+router.post('/supplies/:id/variants/add-stock', validateIdParam, validateVariantStockMovement, inventoryController.addStockToVariant);
+
+/**
+ * @route   POST /api/inventory/supplies/:id/variants/subtract-stock
+ * @desc    Restar stock de una variante específica del insumo
+ * @access  Public
+ * @param   id - ID del insumo
+ * @body    id_supply_color, quantity, notes
+ */
+router.post('/supplies/:id/variants/subtract-stock', validateIdParam, validateVariantStockMovement, inventoryController.subtractStockFromVariant);
 
 // ========== RUTAS DE REPORTES ==========
 

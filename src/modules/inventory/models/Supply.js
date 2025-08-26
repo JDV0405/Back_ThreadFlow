@@ -3,7 +3,6 @@ class Supply {
     this.id_supply = data.id_supply;
     this.description = data.description;
     this.active = data.active !== undefined ? data.active : true;
-    this.id_supply_color = data.id_supply_color;
     this.id_supply_type = data.id_supply_type;
     this.measuring_uom_id = data.measuring_uom_id;
   }
@@ -33,7 +32,6 @@ class Supply {
       active: this.active
     };
 
-    if (this.id_supply_color) data.id_supply_color = this.id_supply_color;
     if (this.id_supply_type) data.id_supply_type = this.id_supply_type;
     if (this.measuring_uom_id) data.measuring_uom_id = this.measuring_uom_id;
 
@@ -46,7 +44,6 @@ class Supply {
       id_supply: row.id_supply,
       description: row.description,
       active: row.active,
-      id_supply_color: row.id_supply_color,
       id_supply_type: row.id_supply_type,
       measuring_uom_id: row.measuring_uom_id
     });

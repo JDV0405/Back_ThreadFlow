@@ -266,7 +266,8 @@ class InventoryService {
         SELECT 
           sv.*,
           s.description as supply_description,
-          sc.name as color_name
+          sc.name as color_name,
+          sc.hex_code as color_hex_code
         FROM supply_variant sv
         JOIN supply s ON sv.id_supply = s.id_supply
         JOIN supply_color sc ON sv.id_supply_color = sc.id_supply_color
@@ -309,7 +310,8 @@ class InventoryService {
           SELECT 
             sv.*,
             s.description as supply_description,
-            sc.name as color_name
+            sc.name as color_name,
+            sc.hex_code as color_hex_code
           FROM supply_variant sv
           JOIN supply s ON sv.id_supply = s.id_supply
           JOIN supply_color sc ON sv.id_supply_color = sc.id_supply_color
@@ -335,7 +337,8 @@ class InventoryService {
         SELECT 
           sv.*,
           s.description as supply_description,
-          sc.name as color_name
+          sc.name as color_name,
+          sc.hex_code as color_hex_code
         FROM supply_variant sv
         JOIN supply s ON sv.id_supply = s.id_supply
         JOIN supply_color sc ON sv.id_supply_color = sc.id_supply_color
