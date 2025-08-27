@@ -16,20 +16,28 @@ Obtiene todas las variantes (colores) de un insumo específico con su stock actu
     {
       "id_supply_variant": 1,
       "id_supply": 1,
-      "id_supply_color": 2,
-      "stock_actual": 150.0000,
-      "created_at": "2025-08-26T10:00:00.000Z",
+      "id_supply_color": 1,
+      "stock_actual": "0.0000",
       "supply_description": "Tela Lafayette",
-      "color_name": "Azul"
+      "color_name": "AMARILLO CLARO",
+      "id_supply_type": 1,
+      "measuring_uom_id": 1,
+      "type_name": "INVISIBLE",
+      "category_name": "SESGO",
+      "uom_description": "Metros"
     },
     {
       "id_supply_variant": 2,
       "id_supply": 1,
-      "id_supply_color": 3,
-      "stock_actual": 75.5000,
-      "created_at": "2025-08-26T10:00:00.000Z",
+      "id_supply_color": 2,
+      "stock_actual": "100.0000",
       "supply_description": "Tela Lafayette",
-      "color_name": "Rojo"
+      "color_name": "AZUL BEBE",
+      "id_supply_type": 1,
+      "measuring_uom_id": 1,
+      "type_name": "INVISIBLE",
+      "category_name": "SESGO",
+      "uom_description": "Metros"
     }
   ],
   "count": 2
@@ -58,9 +66,13 @@ Obtiene una variante existente o la crea si no existe.
     "id_supply": 1,
     "id_supply_color": 4,
     "stock_actual": 0.0000,
-    "created_at": "2025-08-26T10:30:00.000Z",
     "supply_description": "Tela Lafayette",
-    "color_name": "Verde"
+    "color_name": "Verde",
+    "id_supply_type": 1,
+    "measuring_uom_id": 1,
+    "type_name": "INVISIBLE",
+    "category_name": "SESGO",
+    "uom_description": "Metros"
   }
 }
 ```
@@ -223,15 +235,27 @@ GET /api/inventory/supplies/1/variants
 
 ## Notas Importantes
 
-1. **Gestión automática de variantes**: Si intentas agregar stock a una variante que no existe, se creará automáticamente.
+1. **Información completa de insumo**: Cada variante incluye información completa del insumo padre (tipo, categoría, unidad de medida).
 
-2. **Control de stock negativo**: El sistema no permite que el stock de una variante quede en negativo.
+2. **Gestión automática de variantes**: Si intentas agregar stock a una variante que no existe, se creará automáticamente.
 
-3. **Historial de movimientos**: Todos los movimientos de stock se registran automáticamente con la variante específica.
+3. **Control de stock negativo**: El sistema no permite que el stock de una variante quede en negativo.
 
-4. **IDs de colores**: Debes usar los `id_supply_color` que existen en tu tabla `supply_color`.
+4. **Historial de movimientos**: Todos los movimientos de stock se registran automáticamente con la variante específica.
 
-5. **Precisión decimal**: El sistema maneja hasta 4 decimales para las cantidades.
+5. **IDs de colores**: Debes usar los `id_supply_color` que existen en tu tabla `supply_color`.
+
+6. **Precisión decimal**: El sistema maneja hasta 4 decimales para las cantidades.
+
+## Propiedades Incluidas en Variantes
+
+Cada variante incluye ahora:
+- **Información básica**: `id_supply_variant`, `id_supply`, `id_supply_color`, `stock_actual`
+- **Información del insumo**: `supply_description`, `id_supply_type`, `measuring_uom_id`
+- **Información del color**: `color_name`
+- **Información del tipo**: `type_name`
+- **Información de categoría**: `category_name`
+- **Información de unidad**: `uom_description`
 
 ## Endpoints Existentes Actualizados
 

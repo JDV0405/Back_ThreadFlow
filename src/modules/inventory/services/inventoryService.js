@@ -266,16 +266,36 @@ class InventoryService {
         SELECT 
           sv.*,
           s.description as supply_description,
-          sc.name as color_name
+          s.id_supply_type,
+          s.measuring_uom_id,
+          sc.name as color_name,
+          st.name as type_name,
+          scat.name as category_name,
+          uom.description as uom_description
         FROM supply_variant sv
         JOIN supply s ON sv.id_supply = s.id_supply
         JOIN supply_color sc ON sv.id_supply_color = sc.id_supply_color
+        LEFT JOIN supply_type st ON s.id_supply_type = st.id_supply_type
+        LEFT JOIN supply_category scat ON st.id_supply_category = scat.id_supply_category
+        LEFT JOIN unit_of_measure uom ON s.measuring_uom_id = uom.id_uom
         WHERE sv.id_supply = $1
         ORDER BY sc.name
       `;
 
       const result = await query(selectQuery, [id_supply]);
-      return result.rows;
+      return result.rows.map(row => ({
+        id_supply_variant: row.id_supply_variant,
+        id_supply: row.id_supply,
+        id_supply_color: row.id_supply_color,
+        stock_actual: row.stock_actual,
+        supply_description: row.supply_description,
+        color_name: row.color_name,
+        id_supply_type: row.id_supply_type,
+        measuring_uom_id: row.measuring_uom_id,
+        type_name: row.type_name,
+        category_name: row.category_name,
+        uom_description: row.uom_description
+      }));
     } catch (error) {
       console.log('❌ Error obteniendo variantes:', error);
       throw new Error(`Error al obtener variantes: ${error.message}`);
@@ -309,10 +329,18 @@ class InventoryService {
           SELECT 
             sv.*,
             s.description as supply_description,
-            sc.name as color_name
+            s.id_supply_type,
+            s.measuring_uom_id,
+            sc.name as color_name,
+            st.name as type_name,
+            scat.name as category_name,
+            uom.description as uom_description
           FROM supply_variant sv
           JOIN supply s ON sv.id_supply = s.id_supply
           JOIN supply_color sc ON sv.id_supply_color = sc.id_supply_color
+          LEFT JOIN supply_type st ON s.id_supply_type = st.id_supply_type
+          LEFT JOIN supply_category scat ON st.id_supply_category = scat.id_supply_category
+          LEFT JOIN unit_of_measure uom ON s.measuring_uom_id = uom.id_uom
           WHERE sv.id_supply_variant = $1
         `;
         
@@ -335,10 +363,18 @@ class InventoryService {
         SELECT 
           sv.*,
           s.description as supply_description,
-          sc.name as color_name
+          s.id_supply_type,
+          s.measuring_uom_id,
+          sc.name as color_name,
+          st.name as type_name,
+          scat.name as category_name,
+          uom.description as uom_description
         FROM supply_variant sv
         JOIN supply s ON sv.id_supply = s.id_supply
         JOIN supply_color sc ON sv.id_supply_color = sc.id_supply_color
+        LEFT JOIN supply_type st ON s.id_supply_type = st.id_supply_type
+        LEFT JOIN supply_category scat ON st.id_supply_category = scat.id_supply_category
+        LEFT JOIN unit_of_measure uom ON s.measuring_uom_id = uom.id_uom
         WHERE sv.id_supply_variant = $1
       `;
       
